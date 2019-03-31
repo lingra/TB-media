@@ -5,6 +5,8 @@
       <script src="https://unpkg.com/topojson-client@3"></script>
       <script src="https://d3js.org/d3.geo.projection.v0.js"></script>
       <script src="https://datamaps.github.io/scripts/datamaps.world.min.js?v=1"></script>
+      <script src="https://d3js.org/d3.v4.js"></script>
+      <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
       <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css"> 
       
       <style>
@@ -79,13 +81,11 @@
                       <div class="col-sm-2"></div>
                   </div>
                   <div class="row">
-                      <div class="col-sm-3"></div>
-                      <div class="col-sm-6">
+                      <div class="col-sm-1"></div>
+                      <div class="col-sm-10">
                           <div id="yearButtons">
-                              <input class="waveButton" id="buttonFirst" name="buttonFirst" type="button" value="1995-1999"/>
-                              <input class="waveButton" id="buttonSecond" name="buttonSecond" type="button" value="2000-2004"/>
-                              <input class="waveButton" id="buttonThird" name="buttonThird" type="button" value="2005-2009"/>
-                              <input class="waveButton" id="buttonForth" name="buttonForth" type="button" value="2010-2014"/>
+                              <input class="waveButton" id="buttonFirst" name="buttonFirst" type="button" value="Resultat"/>
+                              <input class="waveButton" id="buttonSecond" name="buttonSecond" type="button" value="Nämnder"/>
                               <p><label id="year"></label></p>
                           </div>
                       </div>
@@ -95,19 +95,6 @@
                   <div class="row">
                       <div class="col-sm-1"></div>
                       <div class="col-sm-10">
-                          <input class="resetButton" id="buttonReset" name="buttonReset" type="button" value="Reset Data"/>
-                          <input class="chosebutton" id="buttonDeterm" name="buttonDeterm" type="button" value="Determination Perseverance"/>
-                          <input class="chosebutton" id="buttonRespons" name="buttonRespons" type="button" value="Feeling Of Responsibility"/>
-                          <input class="chosebutton" id="buttonManners" name="buttonManners" type="button" value="Good Manners"/>
-                          <input class="chosebutton" id="buttonHardWork" name="buttonHardWork" type="button" value="Hard Work"/>
-                          <input class="chosebutton" id="buttonImagin" name="buttonImagin" type="button" value="Imagination"/>
-                          <input class="chosebutton" id="buttonIndepen" name="buttonIndepen" type="button" value="Independence"/>
-                          <input class="chosebutton" id="buttonObedien" name="buttonObedien" type="button" value="Obedience"/>
-                          <input class="chosebutton" id="buttonReligios" name="buttonReligios" type="button" value="Religious Faith"/>
-                          <input class="chosebutton" id="buttonSelfEx" name="buttonSelfEx" type="button" value="Self Expression"/>
-                          <input class="chosebutton" id="buttonThrift" name="buttonThrift" type="button" value="Thrift Saving Money And Things"/>
-                          <input class="chosebutton" id="buttonToleranc" name="buttonToleranc" type="button" value="Tolerance And Respect For Other People"/>
-                          <input class="chosebutton" id="buttonUnself" name="buttonUnself" type="button" value="Unselfishness"/>
                       </div>
                       <div class="col-sm-1"></div>
                   </div>
@@ -121,323 +108,124 @@
           <div class="col-sm-1"></div>
           <div class="col-sm-6">
               <div id="mapDiv">
-                  <div id="world-map">  <!----- Div för worldskartan----->
+                  <!-- <div id="world-map">  <!----- Div för worldskartan----->
+                  <!--</div> -->
+                  
+                  <!-- Add a svg area, empty -->
+                  <!-- Initialize a select button -->
+                  <select id="selectButton"></select>
+                  <div id="my_dataviz">
                   </div>
                   
-                  <script type="text/javascript">
-                      var possibleWaves = ["1995-1999","2000-2004","2005-2009","2010-2014"];
-                      var namnd = "";
-                      var headline = "Children Qualities in ";
-                      var worldMap;
-                      //////// GET RIGHT WAVE + UPDATE HEADER
-                      var getWave = function(button) {
-                          var but = document.getElementById(button);
-                          namnd = but.value;
-                          console.log(but.value);
-                          var headText = document.getElementById('welcomeText');
-                          headText.innerHTML = '';
-                          headText.innerHTML += "Children Qualities in: " + namnd;
-                          };
-                      /// FILE PATHES BASED ON WAVES
-                      var opt1 = "./Data/" + namnd; // + "/ChildQual_DeterminationPerseverance.json";
-                      var opt2 = "./Data/" + namnd;
-                      var opt3 = "./Data/" + namnd;
-                      var opt4 = "./Data/" + namnd;
-                      var opt5 = "./Data/" + namnd;
-                      var opt6 = "./Data/" + namnd;
-                      var opt7 = "./Data/" + namnd;
-                      var opt8 = "./Data/" + namnd;
-                      var opt9 = "./Data/" + namnd;
-                      var opt10 = "./Data/" + namnd;
-                      var opt11 = "./Data/" + namnd;
-                      var opt12 = "./Data/" + namnd;
-                      /////// UPDATE DATA TO MAP
-                      var updateData = function (file) {
-                          d3.json(file, function (data) {
-                              var labText = document.getElementById("totalAverage");
-                              if (data == undefined) {
-                                  labText.innerHTML += "<p style='font-size:36px;'><strong>No Data Available</strong></p>"; 
-                              } else {
-                                  worldMap.updateChoropleth(data);
-                              };
-                          });
-                      };
-                      //////// CHANGE LABEL 
-                      var changeLabel = function(info) {
-                          var lab = document.getElementById("detailInfo");
-                          lab.innerHTML = "";
-                          lab.innerHTML += "<p><strong>Nämnd: </strong>" + namnd + "</p>" ; 
-                          lab.innerHTML += "<p><strong>Information about: </strong>" + info + "</p>";
-                      };
-                      var createWorldMap = function() {
-                          ///////// CREATE MAP
-                          worldMap = new Datamap({
-                              element: document.getElementById("world-map"),
-                              scope: "world",
-                              projection: 'mercator',
-                              fills: {
-                                  0: '#FFFA90',
-                                  10: '#EEE184',
-                                  20: '#DDC878',
-                                  30: '#CDAF6C',
-                                  40: '#BC9660',
-                                  50: '#AC7D55',
-                                  60: '#9B6449',
-                                  70: '#8A4B3D',
-                                  80: '#7A3131',
-                                  90: '#691825',
-                                  100: '#691825',
-                                  defaultFill: 'lightgrey'
-                              },
-                              data: {},
-                              geographyConfig: {
-                                  highlightOnHover: true,
-                                  //highlightFillColor: 'darkred',
-                                  popupOnHover: true,     // landet
-                                  //highlightBorderColor: 'darkgrey',
-                                  popupTemplate: function(geo, data) {
-                                      var div = document.getElementById('countryDetail');
-                                      div.innerHTML = '';
-                                      if (!data){
-                                          this.highlightFillColor = 'lightgrey';
-                                          this.highlightBorderWidth = 0;
-                                          //this.highlightBorderColor = 'lightgrey';
-                                          return '';
-                                      } else {
-                                          this.highlightFillColor = 'darkred';
-                                          var div = document.getElementById('countryDetail');
-                                          div.innerHTML = '';
-                                          div.innerHTML += "<strong>" + data.Country + "</strong><br> Important: " + data.Yes + "%<br>Not so important: " + data.No + "%";
-                                          return "<div class='hoverinfo'>"+ data.Country +"<br><strong>Yes: </strong>" + data.Yes + "%</div>";
-                                      }
-                                  }
-                              }
-                          });
-                          worldMap.legend();
-                      }
-                      //////////BUTTONS/////////////
-                      ////// WAVE BUTTONS              
-                      document.getElementById('buttonFirst').addEventListener('click', function(e) { getWave("buttonFirst") } , false);
-                      document.getElementById('buttonSecond').addEventListener('click', function(e){getWave("buttonSecond")} , false);
-                      document.getElementById('buttonThird').addEventListener('click', function(e){getWave("buttonThird")} , false);
-                      document.getElementById('buttonForth').addEventListener('click', function(e){getWave("buttonForth")} , false);
+                  <script>
+                        // set the dimensions and margins of the graph
+                        var margin = {top: 10, right: 100, bottom: 30, left: 30},
+                            width = 760 - margin.left - margin.right,
+                            height = 400 - margin.top - margin.bottom;
+
+                        // append the svg object to the body of the page
+                        var svg = d3.select("#my_dataviz")
+                          .append("svg")
+                            .attr("width", width + margin.left + margin.right)
+                            .attr("height", height + margin.top + margin.bottom)
+                          .append("g")
+                            .attr("transform",
+                                  "translate(" + margin.left + "," + margin.top + ")");
+
+                        //Read the data
+                        d3.csv("./Data/Alla.csv", function(data) {
+
+                            // List of groups (here I have one group per column)
+                            var allGroup = ["Centralt", "Styrelsen", "METAdorerna", "Naringslivsgruppen", "MediasBranschdag", "Mottagningen", "Klubbmasteriet", "Kommunikationsnamnden", "Studienamnden", "Valberedningen", "Fotogruppen", "Qulturnamnden", "Medielabbet", "Sanglederiet", "Spexmasteriet", "Idrottsnamnden", "Matlaget", "Spelnorderiet", "InternationellaNamnden", "METAspexet", "Resultat"]
+                            
+                            var x_domain = d3.extent(data, function(d) { return d.Year; });// [2012, 2019]
+                            
+                            // add the options to the button
+                            d3.select("#selectButton")
+                              .selectAll('myOptions')
+                                .data(allGroup)
+                              .enter()
+                                .append('option')
+                              .text(function (d) { return d; }) // text showed in the menu
+                              .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+                            // Add X axis --> it is a date format
+                            var x = d3.scaleLinear()
+                              .domain(x_domain)
+                              .range([ 0, width ]);
+                            svg.append("g")
+                              .attr("transform", "translate(0," + height + ")")
+                              .call(d3.axisBottom(x));
+
+                            // Add Y axis
+                            var y = d3.scaleLinear()
+                              .domain( [0,30000])
+                              .range([ height, 0 ]);
+                            svg.append("g")
+                              .call(d3.axisLeft(y));
+
+                            // Initialize line with group a
+                            var line = svg
+                              .append('g')
+                              .append("path")
+                                .datum(data)
+                                .attr("d", d3.line()
+                                  .x(function(d) { return x(+d.Year) })
+                                  .y(function(d) { return y(+d.Centralt) })
+                                )
+                                .attr("stroke", "black")
+                                .style("stroke-width", 4)
+                                .style("fill", "none")
+
+                            // Initialize dots with group a
+                            var dot = svg
+                              .selectAll('circle')
+                              .data(data)
+                              .enter()
+                              .append('circle')
+                                .attr("cx", function(d) { return x(+d.Year) })
+                                .attr("cy", function(d) { return y(+d.Centralt) })
+                                .attr("r", 5)
+                                .style("fill", "#69b3a2")
+
+
+                            // A function that update the chart
+                            function update(selectedGroup) {
+
+                              // Create new data with the selection?
+                              var dataFilter = data.map(function(d){return {Year: d.Year, value:d[selectedGroup]} })
+                              console.log(dataFilter)
+                                var namnd = dataFilter.value
+                                console.log(namnd)
+                              // Give these new data to update line
+                              line
+                                  .datum(dataFilter)
+                                  .transition()
+                                  .duration(1000)
+                                  .attr("d", d3.line()
+                                    .x(function(d) { return x(+d.Year) })
+                                    .y(function(d) { return y(+d.value) })
+                                  )
+                              dot
+                                .data(dataFilter)
+                                .transition()
+                                .duration(1000)
+                                  .attr("cx", function(d) { return x(+d.Year) })
+                                  .attr("cy", function(d) { return y(+d.value) })
+                            }
+
+                            // When the button is changed, run the updateChart function
+                            d3.select("#selectButton").on("change", function(d) {
+                                // recover the option that has been chosen
+                                var selectedOption = d3.select(this).property("value")
+                                // run the updateChart function with this selected option
+                                console.log(selectedOption)
+                                update(selectedOption)
+                            })
+
+                        })
                       
-                      
-                      createWorldMap();
-                      
-                      ///// RESET
-                      document.getElementById('buttonReset').addEventListener('click', function(e) {
-                          emptyMap();
-                      } , false);
-                      ///// OTHERS
-                      document.getElementById('buttonDeterm').addEventListener('click', function(e){ 
-                          if (!namnd){
-                          } else {
-                              opt1 = "./Data/" + namnd + "/ChildQual_DeterminationPerseverance.json";
-                              emptyMap();
-                              updateData(opt1);
-                              changeLabel(document.getElementById('buttonDeterm').value);
-                              showAverage(opt1, namnd);
-                              sortJson(opt1, namnd);
-                          }
-                      } , false);
-                      document.getElementById("buttonRespons").addEventListener('click', function(e){ 
-                          if (!namnd){
-                          } else {
-                              opt2 = "./Data/" + namnd + "/ChildQual_FeelingOfResponsibility.json";
-                              emptyMap();
-                              updateData(opt2);
-                              changeLabel(document.getElementById('buttonRespons').value);
-                              showAverage(opt2, namnd);
-                              sortJson(opt2, namnd);
-                          }
-                      } , false);
-                      
-                      
-                      document.getElementById("buttonManners").addEventListener('click', function(e){ 
-                          if (!namnd){
-                          } else {
-                              opt12 = "./Data/" + namnd + "/ChildQual_GoodManners.json";
-                              emptyMap();
-                              updateData(opt12);
-                              changeLabel(document.getElementById('buttonManners').value);
-                              showAverage(opt12, namnd);
-                              sortJson(opt12, namnd);
-                          }
-                      } , false);
-                      document.getElementById("buttonHardWork").addEventListener('click', function(e){ 
-                          if (!namnd){
-                          } else {
-                              opt3 = "./Data/" + namnd + "/ChildQual_HardWork.json";
-                              emptyMap();
-                              updateData(opt3);
-                              changeLabel(document.getElementById('buttonHardWork').value);
-                              showAverage(opt3, namnd); 
-                              sortJson(opt3, namnd);
-                          }
-                      } , false);
-                      document.getElementById("buttonImagin").addEventListener('click', function(e) { 
-                          if (!namnd){
-                          } else {
-                              opt4 = "./Data/" + namnd + "/ChildQual_Imagination.json";
-                              emptyMap();
-                              updateData(opt4);
-                              changeLabel(document.getElementById('buttonImagin').value);
-                              showAverage(opt4, namnd); 
-                              sortJson(opt4, namnd);
-                          }
-                      } , false);
-                      document.getElementById("buttonIndepen").addEventListener('click', function(e) { 
-                          if (!namnd){
-                          } else {
-                              opt5 = "./Data/" + namnd + "/ChildQual_Independence.json";
-                              emptyMap();
-                              updateData(opt5);
-                              changeLabel(document.getElementById('buttonIndepen').value);
-                              showAverage(opt5, namnd); 
-                              sortJson(opt5, namnd);
-                          }
-                      } , false);
-                      document.getElementById("buttonObedien").addEventListener('click', function(e) { 
-                          if (!namnd){
-                          } else {
-                              opt6 = "./Data/" + namnd + "/ChildQual_Obedience.json";
-                              emptyMap();
-                              updateData(opt6);
-                              changeLabel(document.getElementById('buttonObedien').value);
-                              showAverage(opt6, namnd);
-                              sortJson(opt6, namnd);
-                          }
-                      } , false);
-                      document.getElementById("buttonReligios").addEventListener('click', function(e) { 
-                          if (!namnd){
-                          } else {
-                              opt7 = "./Data/" + namnd + "/ChildQual_ReligiousFaith.json";
-                              emptyMap();
-                              updateData(opt7);
-                              changeLabel(document.getElementById('buttonReligios').value);
-                              showAverage(opt7, namnd);
-                              sortJson(opt7, namnd);
-                          }
-                      }, false);
-                      document.getElementById("buttonSelfEx").addEventListener('click', function(e) {
-                          if (!namnd){
-                          } else {
-                              opt8 = "./Data/" + namnd + "/ChildQual_SelfExpression.json";
-                              emptyMap();
-                              updateData(opt8);
-                              changeLabel(document.getElementById('buttonSelfEx').value);
-                              showAverage(opt8, namnd);
-                              sortJson(opt8, namnd);
-                          }
-                      } , false);
-                      document.getElementById("buttonThrift").addEventListener('click', function(e) {
-                          if (!namnd){
-                          } else {
-                              opt9 = "./Data/" + namnd + "/ChildQual_ThriftSavingMoneyAndThings.json";
-                              emptyMap();
-                              updateData(opt9);
-                              changeLabel(document.getElementById('buttonThrift').value);
-                              showAverage(opt9, namnd);
-                              sortJson(opt9, namnd);
-                          }
-                      } , false);
-                      document.getElementById("buttonToleranc").addEventListener('click', function(e) { 
-                          if (!namnd){
-                          } else {
-                              opt10 = "./Data/" + namnd + "/ChildQual_ToleranceAndRespectForOtherPeople.json";
-                              emptyMap();
-                              updateData(opt10);
-                              changeLabel(document.getElementById('buttonToleranc').value);
-                              showAverage(opt10, namnd);
-                              sortJson(opt10, namnd);
-                          }
-                      } , false);
-                      document.getElementById("buttonUnself").addEventListener('click', function(e) { 
-                          if (!namnd){
-                          } else {
-                              opt11 = "./Data/" + namnd + "/ChildQual_Unselfishness.json";
-                              emptyMap();
-                              updateData(opt11); 
-                              changeLabel(document.getElementById('buttonUnself').value);
-                              showAverage(opt11, namnd);
-                              sortJson(opt11, namnd);
-                          }
-                      } , false);
-                      /////////// SHOW AVERAGE
-                      var showAverage = function(file, wave) {
-                          d3.json(file, function (data) {
-                              var tmpDic = JSON.parse(JSON.stringify(data));
-                              for (var i in tmpDic) {
-                                  if (tmpDic[i].Country == "Total"){
-                                      var lab = document.getElementById("totalAverage");
-                                      lab.innerHTML = "";
-                                      lab.innerHTML += "<p><strong>Average on the globe:</p></strong><p>Important: " + tmpDic[i].Yes + "%</p><p>Not important: " + tmpDic[i].No + "%" ; 
-                                  }
-                              }
-                          });
-                      };
-                      ///////////// TOP LIST
-                      var sortJson = function(file, wave) {
-                          d3.json(file, function (data){
-                              console.log(data);
-                              var tmpDic = JSON.parse(JSON.stringify(data));
-                              var len = Object.keys(tmpDic).length;
-                              console.log(len);
-                              var labYes = document.getElementById("topListYes");
-                              labYes.innerHTML = "<strong>Top 5:</strong>";
-                              var tmpArr = [];
-                              for (var j = 0 ; j < 5 ; j++) {
-                                  var tmpVar;
-                                  for (var i in tmpDic) {
-                                      if (tmpVar == undefined || tmpVar == "" || tmpVar.Yes < tmpDic[i].Yes) {
-                                          if (tmpDic[i] != tmpVar) {
-                                              if (tmpArr.includes(tmpDic[i])){
-                                                  continue;
-                                              } else {
-                                                  //tmpArr.push(tmpDic[i].Country);
-                                                  tmpVar = tmpDic[i];
-                                              }
-                                          }
-                                      }
-                                  };
-                                  tmpArr.push(tmpVar);
-                                  labYes.innerHTML += "<p>" + tmpVar.Country + ": " + tmpVar.Yes + "%" ; 
-                                  tmpVar = "";
-                              }
-                              var labNo = document.getElementById("topListNo");
-                              labNo.innerHTML = "<strong>Bottom 5:</strong>";
-                              for (var j = 0 ; j < 5 ; j++) {
-                                  var tmpVar;
-                                  for (var i in tmpDic) {
-                                      if (tmpVar == undefined || tmpVar == "" || tmpVar.Yes > tmpDic[i].Yes) {
-                                          if (tmpDic[i] != tmpVar) {
-                                              if (tmpArr.includes(tmpDic[i])){
-                                                  continue;
-                                              } else {
-                                                  tmpVar = tmpDic[i];
-                                              }
-                                          }
-                                      }
-                                  };
-                                  tmpArr.push(tmpVar);
-                                  labNo.innerHTML += "<p>" + tmpVar.Country + ": " + tmpVar.Yes + "%" ; 
-                                  tmpVar = "";
-                              }
-                          })
-                      };
-                      
-                      
-                      /////////// EMPTY DRAWING AREA
-                      var emptyMap = function() {
-                          document.getElementById("world-map").innerHTML = "";
-                          createWorldMap();
-                          document.getElementById("detailInfo").innerHTML = "";
-                          document.getElementById("totalAverage").innerHTML = "";
-                          document.getElementById("topListYes").innerHTML = "";
-                          document.getElementById("topListNo").innerHTML = "";
-                      };
-                  </script>
+                        </script>
               </div>
               
               <div id="legendInfo" width=100%></div>
@@ -450,17 +238,11 @@
                       <div class="col-sm-9">
                           <div id="information">
                               <hr>
-                              <div id="detailInfo"></div>
+                              <div id="namnd"></div>
                               <hr>
-                              <div id="totalAverage"></div>
+                              <div id="topListYes"></div>
                               <hr>
                               <div class="row">
-                                  <div class="col-sm-6">
-                                      <div id="topListYes"></div>
-                                  </div>
-                                  <div class="col-sm-6">
-                                      <div id="topListNo"></div>
-                                  </div>
                               </div>
                               <hr>
                               <div id="countryDetail"></div>
@@ -471,7 +253,10 @@
               </div>
           </div>
           
-          <div class="col-sm-1"></div>
+          <div class="col-sm-1">
+              
           </div>
+          </div>
+      
     </body>
 </html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script src="https://d3js.org/d3.v3.min.js"></script>
+      <script src="https://unpkg.com/topojson-client@3"></script>
+      <script src="https://d3js.org/d3.geo.projection.v0.js"></script>
+      <script src="https://datamaps.github.io/scripts/datamaps.world.min.js?v=1"></script>
+      <script src="http://d3js.org/d3.v4.js"></script>
+      <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css"> 
+      
+      <style>
+          
+          #welcometext {
+              text-align: center;
+          }
+          #buttons {
+              background-color: aliceblue;
+              height: auto;
+              padding: 7px;
+          }
+          #buttons .chosebutton {
+              margin: 5px;
+              padding: 7px;
+          }
+          #yearButtons {
+              align-content: center;
+              justify-content: center; 
+          }
+          .waveButton {
+              margin: 4px;
+              padding: 10px;
+              background-color:burlywood;
+              color: saddlebrown;
+          }
+          .resetButton {
+              margin: 5px;
+              padding: 7px;
+              color: red;
+          }
+          #trailsButton {
+              background-color: aquamarine;
+          }
+          #world-map {
+              /*background-color: ghostwhite;*/
+              position: relative; 
+              width: 835px; 
+              height: 600px;
+              display: inline-block;
+              text-align: center;
+          }
+          #legendInfo {
+              width: 100%;
+              align-content: center;
+          }
+          #showTextData {
+              height: 50px;
+          }
+          #printoutValues {
+              background-color: aqua;
+          }
+          #showTextData {
+              margin: 20px;
+          }
+          
+      </style>
+      
+  </head>
+  <body>
+      
+      <div id="buttons">
+          <div class="row">
+              <div class="col-sm-1"></div>
+              <div class="col-sm-10">
+                  <div class="row">
+                      <div class="col-sm-2"></div>
+                      <div class="col-sm-8">
+                          <h2 id="welcomeText">
+                          Teambuildings </h2>
+                      </div>
+                      <div class="col-sm-2"></div>
+                  </div>
+                  <div class="row">
+                      <div class="col-sm-3"></div>
+                      <div class="col-sm-6">
+                          <div id="yearButtons">
+                              <input class="waveButton" id="buttonFirst" name="buttonFirst" type="button" value="1995-1999"/>
+                              <input class="waveButton" id="buttonSecond" name="buttonSecond" type="button" value="2000-2004"/>
+                              <input class="waveButton" id="buttonThird" name="buttonThird" type="button" value="2005-2009"/>
+                              <input class="waveButton" id="buttonForth" name="buttonForth" type="button" value="2010-2014"/>
+                              <p><label id="year"></label></p>
+                          </div>
+                      </div>
+                </div>
+                  
+                  
+                  <div class="row">
+                      <div class="col-sm-1"></div>
+                      <div class="col-sm-10">
+                          <input class="resetButton" id="buttonReset" name="buttonReset" type="button" value="Reset Data"/>
+                          <input class="chosebutton" id="buttonDeterm" name="buttonDeterm" type="button" value="Determination Perseverance"/>
+                          <input class="chosebutton" id="buttonRespons" name="buttonRespons" type="button" value="Feeling Of Responsibility"/>
+                          <input class="chosebutton" id="buttonManners" name="buttonManners" type="button" value="Good Manners"/>
+                          <input class="chosebutton" id="buttonHardWork" name="buttonHardWork" type="button" value="Hard Work"/>
+                          <input class="chosebutton" id="buttonImagin" name="buttonImagin" type="button" value="Imagination"/>
+                          <input class="chosebutton" id="buttonIndepen" name="buttonIndepen" type="button" value="Independence"/>
+                          <input class="chosebutton" id="buttonObedien" name="buttonObedien" type="button" value="Obedience"/>
+                          <input class="chosebutton" id="buttonReligios" name="buttonReligios" type="button" value="Religious Faith"/>
+                          <input class="chosebutton" id="buttonSelfEx" name="buttonSelfEx" type="button" value="Self Expression"/>
+                          <input class="chosebutton" id="buttonThrift" name="buttonThrift" type="button" value="Thrift Saving Money And Things"/>
+                          <input class="chosebutton" id="buttonToleranc" name="buttonToleranc" type="button" value="Tolerance And Respect For Other People"/>
+                          <input class="chosebutton" id="buttonUnself" name="buttonUnself" type="button" value="Unselfishness"/>
+                      </div>
+                      <div class="col-sm-1"></div>
+                  </div>
+              </div>
+              <div class="col-sm-1"></div>
+          </div>
+      </div>
+      
+
+      <div class="row">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-6">
+              <div id="mapDiv">
+                  <!-- <div id="world-map">  <!----- Div för worldskartan----->
+                  <!--</div> -->
+                  
+                  <!-- Add a svg area, empty -->
+                  <div id="Area">
+                      <svg> 
+                          <circle class="target" style="fill: #69b3a2" stroke="black" cx=50 cy=50 r=40></circle>
+                      </svg>
+                  </div>
+                  
+                  <!--
+                  <script type="text/javascript">
+                      
+                      /*d3.csv("TeambuildingData.csv", function(data) {
+                          // Extract the list of dimensions and create a scale for each.
+                          x.domain(dimensions = d3.keys(data[0]).filter(function(d) {
+                              return d != "Alias" && (y[d] = d3.scale.linear()
+                                  .domain(d3.extent(data, function(p) { return +p[d]; }))
+                                  .range([height, 0]));
+                          }));*/
+                      
+                      
+                      var possibleWaves = ["Centralt","Styrelsen","METAdorerna","Näringslivsgruppen","Medias Branschdag","Mottagningen","Klubbmästeriet","Kommunikationsnämnden","Studienämnden","Valberedningen","Fotogruppen","Qulturnämnden","Medielabbet","Sånglederiet","Spexmästeriet","Idrottsnämnden","Matlaget","Spelnörderiet","Internationella Nämnden","METAspexet","Resultat"];
+          
+                      
+                      // set the dimensions and margins of the graph
+                      var margin = {top: 10, right: 40, bottom: 30, left: 30},
+                          width = 450 - margin.left - margin.right,
+                          height = 400 - margin.top - margin.bottom;
+
+                      // append the svg object to the body of the page
+                      var sVg = d3.select("#Area")
+                        .append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+
+                        // translate this svg element to leave some margin.
+                        .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                        // X scale and Axis
+                        var x = d3.scaleLinear()
+                            .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
+                            .range([0, width]);       // This is the corresponding value I want in Pixel
+                        sVg
+                          .append('g')
+                          .attr("transform", "translate(0," + height + ")")
+                          .call(d3.axisBottom(x));
+
+                        // X scale and Axis
+                        var y = d3.scaleLinear()
+                            .domain([0, 100])         // This is the min and the max of the data: 0 to 100 if percentages
+                            .range([height, 0]);       // This is the corresponding value I want in Pixel
+                        sVg
+                          .append('g')
+                          .call(d3.axisLeft(y));
+
+                    </script> -->
+              </div>
+              
+              <div id="legendInfo" width=100%></div>
+          </div> 
+          
+          <div class="col-sm-4">
+              <div id="showTextData">
+                  <div class="row">
+                      <div class="col-sm-2"></div>
+                      <div class="col-sm-9">
+                          <div id="information">
+                              <hr>
+                              <div id="detailInfo"></div>
+                              <hr>
+                              <div id="totalAverage"></div>
+                              <hr>
+                              <div class="row">
+                                  <div class="col-sm-6">
+                                      <div id="topListYes"></div>
+                                  </div>
+                                  <div class="col-sm-6">
+                                      <div id="topListNo"></div>
+                                  </div>
+                              </div>
+                              <hr>
+                              <div id="countryDetail"></div>
+                          </div>
+                      </div>
+                      <div class="col-sm-1"></div>
+                  </div>
+              </div>
+          </div>
+          
+          <div class="col-sm-1">
+              
+          </div>
+          </div>
+      
+    </body>
+</html>
