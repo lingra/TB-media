@@ -115,8 +115,8 @@
                   <!-- Add a svg area, empty -->
                   <!-- Initialize a select button -->
                   <select id="selectButton"></select>
-                  <div id="my_dataviz">
-                  </div>
+                  
+                  <div id="my_dataviz"></div>
                   
                   <script>
                         // set the dimensions and margins of the graph
@@ -168,21 +168,6 @@
                               .range([ height, 0 ]);
                             svg.append("g")
                               .call(d3.axisLeft(y));
-                            
-                              // create a tooltip
-                              var Tooltip = d3.select("#my_dataviz")
-                                .append("div")
-                                .style("opacity", 0)
-                                .attr("class", "tooltip")
-                                .style("background-color", "white")
-                                .style("border", "solid")
-                                .style("border-width", "2px")
-                                .style("border-radius", "5px")
-                                .style("padding", "5px")
-                              
-                              var div = d3.select("#my_dataviz").append("div")	
-                                .attr("class", "tooltip")				
-                                .style("opacity", 0);
 
                             // Initialize line with group a
                             var line = svg

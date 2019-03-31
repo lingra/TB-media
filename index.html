@@ -86,6 +86,7 @@
                           <div id="yearButtons">
                               <input class="waveButton" id="buttonFirst" name="buttonFirst" type="button" value="Resultat"/>
                               <input class="waveButton" id="buttonSecond" name="buttonSecond" type="button" value="Nämnder"/>
+                              <input class="waveButton" id="buttonThird" name="buttonThird" type="button" value="Jämförelse"/>
                               <p><label id="year"></label></p>
                           </div>
                       </div>
@@ -104,7 +105,7 @@
       </div>
       
 
-      <div class="row">
+      <div class="row" style="margin-top: 20px;">
           <div class="col-sm-1"></div>
           <div class="col-sm-6">
               <div id="mapDiv">
@@ -121,8 +122,9 @@
                         // set the dimensions and margins of the graph
                         var margin = {top: 10, right: 100, bottom: 30, left: 30},
                             width = 760 - margin.left - margin.right,
-                            height = 400 - margin.top - margin.bottom;
-
+                            height = 500 - margin.top - margin.bottom;
+                      
+                      
                         // append the svg object to the body of the page
                         var svg = d3.select("#my_dataviz")
                           .append("svg")
@@ -132,6 +134,7 @@
                             .attr("transform",
                                   "translate(" + margin.left + "," + margin.top + ")");
 
+                      
                         //Read the data
                         d3.csv("./Data/Alla.csv", function(data) {
 
@@ -139,6 +142,7 @@
                             var allGroup = ["Centralt", "Styrelsen", "METAdorerna", "Naringslivsgruppen", "MediasBranschdag", "Mottagningen", "Klubbmasteriet", "Kommunikationsnamnden", "Studienamnden", "Valberedningen", "Fotogruppen", "Qulturnamnden", "Medielabbet", "Sanglederiet", "Spexmasteriet", "Idrottsnamnden", "Matlaget", "Spelnorderiet", "InternationellaNamnden", "METAspexet", "Resultat"]
                             
                             var x_domain = d3.extent(data, function(d) { return d.Year; });// [2012, 2019]
+                            
                             
                             // add the options to the button
                             d3.select("#selectButton")
@@ -159,10 +163,21 @@
 
                             // Add Y axis
                             var y = d3.scaleLinear()
-                              .domain( [0,30000])
+                              .domain( [0,31000])
                               .range([ height, 0 ]);
                             svg.append("g")
                               .call(d3.axisLeft(y));
+                            
+                            // Creates Tooltip
+                            var Tooltip = d3.select("#my_dataviz")
+                                .append("div")
+                                .style("opacity", 0)
+                                .attr("class", "tooltip")
+                                .style("background-color", "white")
+                                .style("border", "solid")
+                                .style("border-width", "2px")
+                                .style("border-radius", "5px")
+                                .style("padding", "5px")
 
                             // Initialize line with group a
                             var line = svg
@@ -187,16 +202,38 @@
                                 .attr("cy", function(d) { return y(+d.Centralt) })
                                 .attr("r", 5)
                                 .style("fill", "#69b3a2")
-
-
+                            .on("mouseover", function(d) {		
+                                Tooltip.transition()		
+                                    .duration(200)		
+                                    .style("opacity", .9);		
+                                Tooltip	.html(d.value)	
+                                    .style("left", (d3.event.pageX) + "px")		
+                                    .style("top", (d3.event.pageY) + "px");	
+                                })					
+                            .on("mouseout", function(d) {		
+                                Tooltip.transition()		
+                                    .duration(500)		
+                                    .style("opacity", 0);	
+                            });
+                                
+                            
                             // A function that update the chart
                             function update(selectedGroup) {
 
                               // Create new data with the selection?
                               var dataFilter = data.map(function(d){return {Year: d.Year, value:d[selectedGroup]} })
                               console.log(dataFilter)
+                                
+                                for (key in dataFilter) {
+                                    
+                                }
                                 var namnd = dataFilter.value
                                 console.log(namnd)
+                                
+                                
+                                
+                                
+                                
                               // Give these new data to update line
                               line
                                   .datum(dataFilter)
@@ -220,10 +257,31 @@
                                 var selectedOption = d3.select(this).property("value")
                                 // run the updateChart function with this selected option
                                 console.log(selectedOption)
+                                
+                                var lab = document.getElementById("namnd");
+                                lab.innerHTML = "";
+                                lab.innerHTML += "<p><strong>" + selectedOption + "</strong></p>" ; 
+                                
                                 update(selectedOption)
                             })
 
-                        })
+                        });
+                      
+                      document.getElementById("buttonFirst").addEventListener('click', function(e) { 
+                          // if (!waveData){
+                          // } else {
+                              console.log("Hej");
+                              // opt11 = "./Data/" + waveData + "/ChildQual_Unselfishness.json";
+                              // emptyMap();
+                              // updateData(opt11); 
+                              // changeLabel(document.getElementById('buttonUnself').value);
+                              // showAverage(opt11, waveData);
+                              // sortJson(opt11, waveData);
+                          // }
+                      } , false);
+
+                      
+                      
                       
                         </script>
               </div>
