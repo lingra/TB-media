@@ -224,8 +224,13 @@
                               var dataFilter = data.map(function(d){return {Year: d.Year, value:d[selectedGroup]} })
                               console.log(dataFilter)
                                 
+                                var lista = document.getElementById("topList");
+                                lista.innerHTML = "";
+                                 
+                                
                                 for (key in dataFilter) {
-                                    
+                                    var yearr = parseInt(dataFilter[key].Year) + 1;
+                                    lista.innerHTML += "<p>" + dataFilter[key].Year + "/" + yearr + ": " + dataFilter[key].value + "kr</p>" ;
                                 }
                                 var namnd = dataFilter.value
                                 console.log(namnd)
@@ -298,7 +303,7 @@
                               <hr>
                               <div id="namnd"></div>
                               <hr>
-                              <div id="topListYes"></div>
+                              <div id="topList"></div>
                               <hr>
                               <div class="row">
                               </div>
