@@ -84,9 +84,15 @@
                       <div class="col-sm-1"></div>
                       <div class="col-sm-10">
                           <div id="yearButtons">
-                              <input class="waveButton" id="buttonFirst" name="buttonFirst" type="button" value="Resultat"/>
-                              <input class="waveButton" id="buttonSecond" name="buttonSecond" type="button" value="Nämnder"/>
-                              <input class="waveButton" id="buttonThird" name="buttonThird" type="button" value="Jämförelse"/>
+                              <a href="#">
+                                  <input class="waveButton" id="buttonFirst" name="buttonFirst" type="button" value="Resultat"/>
+                              </a>
+                              <a href="index.html">
+                                  <input class="waveButton" id="buttonSecond" name="buttonSecond" type="button" value="Nämnder"/>
+                              </a>
+                              <a href="#">
+                                  <input class="waveButton" id="buttonThird" name="buttonThird" type="button" value="Jämförelse"/>
+                              </a>
                               <p><label id="year"></label></p>
                           </div>
                       </div>
@@ -114,7 +120,6 @@
                   
                   <!-- Add a svg area, empty -->
                   <!-- Initialize a select button -->
-                  <select id="selectButton"></select>
                   <div id="my_dataviz">
                   </div>
                   
@@ -126,7 +131,7 @@
                       
                         
                         // List of groups (here I have one group per column)
-                        var allGroup = ["Centralt", "Styrelsen", "METAdorerna", "Naringslivsgruppen", "MediasBranschdag", "Mottagningen", "Klubbmasteriet", "Kommunikationsnamnden", "Studienamnden", "Valberedningen", "Fotogruppen", "Qulturnamnden", "Medielabbet", "Sanglederiet", "Spexmasteriet", "Idrottsnamnden", "Matlaget", "Spelnorderiet", "InternationellaNamnden", "METAspexet", "Resultat"];
+                        var allGroup = ["Resultat"];
                       
                         var currentchoise = "";
                       
@@ -140,23 +145,10 @@
                             .attr("transform",
                                   "translate(" + margin.left + "," + margin.top + ")");
                         
-                        var fileName = "./Data/Centralt.csv";
-                        
-                        var fileData = function(fileName) {
-                            //Read the data
-                            d3.csv(fileName, function(data) {
+                        d3.csv("./Data/Resultat.csv", function(data) {
 
-                                var x_domain = d3.extent(data, function(d) { return d.Year; });// [2012, 2019]//[2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019];//
+                                var x_domain = d3.extent(data, function(d) { return d.Year; });
                                 console.log(x_domain);
-
-                                // add the options to the button
-                                d3.select("#selectButton")
-                                  .selectAll('myOptions')
-                                    .data(allGroup)
-                                  .enter()
-                                    .append('option')
-                                  .text(function (d) { return d; }) // text showed in the menu
-                                  .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
                                 // Add X axis --> it is a date format
                                 var x = d3.scaleLinear()
@@ -168,7 +160,7 @@
 
                                 // Add Y axis
                                 var y = d3.scaleLinear()
-                                  .domain( [0,31000])
+                                  .domain( [0,200000])
                                   .range([ height, 0 ]);
                                 svg.append("g")
                                   .call(d3.axisLeft(y));
@@ -226,7 +218,7 @@
                                     Tooltip.transition()		
                                         .duration(200)		
                                         .style("opacity", .9);		
-                                    Tooltip	.html(d.value)	
+                                    Tooltip	.html(d.Budget)	
                                         .style("left", (d3.event.pageX) + "px")		
                                         .style("top", (d3.event.pageY) + "px");	
                                     })					
@@ -250,7 +242,7 @@
                                     Tooltip.transition()		
                                         .duration(200)		
                                         .style("opacity", .9);		
-                                    Tooltip	.html(d.value)	
+                                    Tooltip	.html(d.Used)	
                                         .style("left", (d3.event.pageX) + "px")		
                                         .style("top", (d3.event.pageY) + "px");	
                                     })					
@@ -260,93 +252,7 @@
                                         .style("opacity", 0);	
                                 });
 
-
-                                // A function that update the chart
-                                function update(selectedGroup) {
-                                    console.log("Hej");
-
-                                    // Create new data with the selection?
-
-                                    var fileName = "./Data/" + selectedGroup + ".csv";
-                                    console.log(fileName);
-
-                                    var lista = document.getElementById("topList");
-                                    lista.innerHTML = "";
-                                    
-                                    
-                                    
-                                    d3.csv(fileName, function(data) {
-                                        var dataFilter = data.map(function(d){return {Year: d.Year, Budget:d.Budget, Used:d.Used} })
-                                        console.log(dataFilter)
-                                            
-                                        for (key in dataFilter) {
-                                            var yearr = parseInt(dataFilter[key].Year) + 1;
-                                            lista.innerHTML += "<p>" + dataFilter[key].Year + "/" + yearr + ": " + dataFilter[key].Budget + "kr</p>" ;
-                                        }
-                                        
-                                        // Give these new data to update line
-                                          line1
-                                              .datum(dataFilter)
-                                              .transition()
-                                              .duration(1000)
-                                              .attr("d", d3.line()
-                                                .x(function(d) { return x(+d.Year) })
-                                                .y(function(d) { return y(+d.Budget) })
-                                              )
-                                          dot1
-                                            .data(dataFilter)
-                                            .transition()
-                                            .duration(1000)
-                                              .attr("cx", function(d) { return x(+d.Year) })
-                                              .attr("cy", function(d) { return y(+d.Budget) })
-
-                                        // Give these new data to update line
-                                          line2
-                                              .datum(dataFilter)
-                                              .transition()
-                                              .duration(1000)
-                                              .attr("d", d3.line()
-                                                .x(function(d) { return x(+d.Year) })
-                                                .y(function(d) { return y(+d.Used) })
-                                              )
-                                          dot2
-                                            .data(dataFilter)
-                                            .transition()
-                                            .duration(1000)
-                                              .attr("cx", function(d) { return x(+d.Year) })
-                                              .attr("cy", function(d) { return y(+d.Used) })
-                                        
-                                    })
-
-
-
-
-                                }
-
-                                // When the button is changed, run the updateChart function
-                                d3.select("#selectButton").on("change", function(d) {
-                                    // recover the option that has been chosen
-                                    var selectedOption = d3.select(this).property("value")
-                                    // run the updateChart function with this selected option
-                                    currentchoise = selectedOption;
-                                    console.log("1 " + selectedOption)
-
-                                    var lab = document.getElementById("namnd");
-                                    lab.innerHTML = "";
-                                    lab.innerHTML += "<p><strong>" + selectedOption + "</strong></p>" ; 
-
-                                    update(selectedOption)
-                                })
-
-                            });
-                            
-                        }
-                        
-                        fileData(fileName);
-                      
-                        
-                        ;
-                      
+                            });                                 
                       
                       
                       

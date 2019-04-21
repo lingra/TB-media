@@ -84,9 +84,9 @@
                       <div class="col-sm-1"></div>
                       <div class="col-sm-10">
                           <div id="yearButtons">
-                              <input class="waveButton" id="buttonFirst" name="buttonFirst" type="button" value="Resultat"/>
-                              <input class="waveButton" id="buttonSecond" name="buttonSecond" type="button" value="Nämnder"/>
-                              <input class="waveButton" id="buttonThird" name="buttonThird" type="button" value="Jämförelse"/>
+                              <a href="resultat.html"><input class="waveButton" id="buttonFirst" name="buttonFirst" type="button" value="Resultat"/></a>
+                              <a href="#"><input class="waveButton" id="buttonSecond" name="buttonSecond" type="button" value="Nämnder"/></a>
+                              <a href="#"><input class="waveButton" id="buttonThird" name="buttonThird" type="button" value="Jämförelse"/></a>
                               <p><label id="year"></label></p>
                           </div>
                       </div>
@@ -105,7 +105,7 @@
       </div>
       
 
-      <div class="row"  style="margin-top: 20px;">
+      <div class="row" style="margin-top: 20px;">
           <div class="col-sm-1"></div>
           <div class="col-sm-6">
               <div id="mapDiv">
@@ -142,8 +142,7 @@
                             var allGroup = ["Centralt", "Styrelsen", "METAdorerna", "Naringslivsgruppen", "MediasBranschdag", "Mottagningen", "Klubbmasteriet", "Kommunikationsnamnden", "Studienamnden", "Valberedningen", "Fotogruppen", "Qulturnamnden", "Medielabbet", "Sanglederiet", "Spexmasteriet", "Idrottsnamnden", "Matlaget", "Spelnorderiet", "InternationellaNamnden", "METAspexet", "Resultat"]
                             
                             var x_domain = d3.extent(data, function(d) { return d.Year; });// [2012, 2019]
-                            var formatxAxis = d3.format('.0f');
-
+                            
                             
                             // add the options to the button
                             d3.select("#selectButton")
@@ -169,8 +168,8 @@
                             svg.append("g")
                               .call(d3.axisLeft(y));
                             
-                              // create a tooltip
-                              var Tooltip = d3.select("#my_dataviz")
+                            // Creates Tooltip
+                            var Tooltip = d3.select("#my_dataviz")
                                 .append("div")
                                 .style("opacity", 0)
                                 .attr("class", "tooltip")
@@ -179,10 +178,6 @@
                                 .style("border-width", "2px")
                                 .style("border-radius", "5px")
                                 .style("padding", "5px")
-                              
-                              var div = d3.select("#my_dataviz").append("div")	
-                                .attr("class", "tooltip")				
-                                .style("opacity", 0);
 
                             // Initialize line with group a
                             var line = svg
@@ -207,6 +202,19 @@
                                 .attr("cy", function(d) { return y(+d.Centralt) })
                                 .attr("r", 5)
                                 .style("fill", "#69b3a2")
+                            .on("mouseover", function(d) {		
+                                Tooltip.transition()		
+                                    .duration(200)		
+                                    .style("opacity", .9);		
+                                Tooltip	.html(d.value)	
+                                    .style("left", (d3.event.pageX) + "px")		
+                                    .style("top", (d3.event.pageY) + "px");	
+                                })					
+                            .on("mouseout", function(d) {		
+                                Tooltip.transition()		
+                                    .duration(500)		
+                                    .style("opacity", 0);	
+                            });
                                 
                             
                             // A function that update the chart
@@ -216,22 +224,34 @@
                               var dataFilter = data.map(function(d){return {Year: d.Year, value:d[selectedGroup]} })
                               console.log(dataFilter)
                                 
+                                var lista = document.getElementById("topList");
+                                lista.innerHTML = "";
+                                 
+                                
                                 for (key in dataFilter) {
-                                    
+                                    var yearr = parseInt(dataFilter[key].Year) + 1;
+                                    lista.innerHTML += "<p>" + dataFilter[key].Year + "/" + yearr + ": " + dataFilter[key].value + "kr</p>" ;
                                 }
                                 var namnd = dataFilter.value
                                 console.log(namnd)
                                 
                                 
+                                
+                                
+                                
                               // Give these new data to update line
                               line
                                   .datum(dataFilter)
+                                  .transition()
+                                  .duration(1000)
                                   .attr("d", d3.line()
                                     .x(function(d) { return x(+d.Year) })
                                     .y(function(d) { return y(+d.value) })
                                   )
                               dot
                                 .data(dataFilter)
+                                .transition()
+                                .duration(1000)
                                   .attr("cx", function(d) { return x(+d.Year) })
                                   .attr("cy", function(d) { return y(+d.value) })
                             }
@@ -283,7 +303,7 @@
                               <hr>
                               <div id="namnd"></div>
                               <hr>
-                              <div id="topListYes"></div>
+                              <div id="topList"></div>
                               <hr>
                               <div class="row">
                               </div>
