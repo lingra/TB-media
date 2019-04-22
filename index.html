@@ -226,8 +226,6 @@
                                         .duration(200)		
                                         .style("opacity", .9);		
                                     Tooltip	.html("<strong>" + d.Year + "</strong><br>" + d.Budget + " kr <br>" + d.Used + " kr")	
-                                        //.style("left", (d3.event.pageX) + "px")		
-                                        //.style("top", (d3.event.pageY) + "px");	
                                         .style("left", (d3.event.pageX-100) + "px")		
                                         .style("top", (d3.event.pageY-120) + "px");	
                                     })					
