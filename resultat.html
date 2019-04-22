@@ -263,10 +263,8 @@
                                     console.log(dataFilter)
                                             
                                     for (key in dataFilter) {
-                                        var yearr = parseInt(dataFilter[key].Year) + 1;
                                         
-                                        lista.innerHTML += "<p>" + dataFilter[key].Year + "/" + yearr + ": " + dataFilter[key].Budget + " kr</p>" ;
-                                        
+                                        lista.innerHTML += "<p>" + dataFilter[key].Budget + " kr</p>" ;
                                         anvant.innerHTML += "<p>" + dataFilter[key].Used + " kr</p>";
                                         }
 
@@ -296,9 +294,20 @@
                               <hr>
                               <div id="namnd"></div>
                               <hr>
+
                               <div class="row">
-                                  <div class="col-sm-7" id="topList"></div>
-                                  <div class="col-sm-5" id="UsedList"></div>
+                                  <div class="col-sm-2">
+                                      <p style="color: white">År</p>
+                                      <p>12/13</p>
+                                      <p>13/14</p>
+                                      <p>14/15</p>
+                                      <p>15/16</p>
+                                      <p>16/17</p>
+                                      <p>17/18</p>
+                                      <p>18/19</p>
+                                  </div>
+                                  <div class="col-sm-5" id="topList"></div>
+                                  <div class="col-sm-4" id="UsedList"></div>
                               </div>
                               <hr>
                               <div id="countryDetail"></div>

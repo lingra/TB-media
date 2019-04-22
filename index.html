@@ -11,8 +11,10 @@
       
       <style>
           
-          #welcometext {
+          #welcomeText {
               text-align: center;
+              font-weight: bold;
+              font-size: 40px;
           }
           #buttons {
               background-color: aliceblue;
@@ -63,6 +65,45 @@
               margin: 20px;
           }
           
+          #selectButton {
+              display: block;
+              font-size: 16px;
+              font-family: sans-serif;
+              font-weight: 700;
+              color: #444;
+              line-height: 1.3;
+              padding: .6em 1.4em .5em .8em;
+              width: 100%;
+              max-width: 100%; 
+              box-sizing: border-box;
+              margin: 0;
+              margin-bottom: 20px;
+              border: 1px solid #aaa;
+              box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
+              border-radius: .5em;
+              appearance: none;
+              background-color: #fff;
+          }
+        
+          #selectButtonTwo {
+              font-size: 16px;
+              font-family: sans-serif;
+              font-weight: 700;
+              color: #444;
+              line-height: 1.3;
+              padding: .6em 1.4em .5em .8em;
+              width: 100%;
+              max-width: 45%; 
+              box-sizing: border-box;
+              margin: 0;
+              margin-bottom: 20px;
+              border: 1px solid #aaa;
+              box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
+              border-radius: .5em;
+              appearance: none;
+              background-color: #fff;
+          }
+          
       </style>
       
   </head>
@@ -71,35 +112,25 @@
       <div id="buttons">
           <div class="row">
               <div class="col-sm-1"></div>
-              <div class="col-sm-10">
+              <div class="col-sm-11">
                   <div class="row">
                       <div class="col-sm-2"></div>
                       <div class="col-sm-8">
-                          <h2 id="welcomeText">
-                          Teambuildings </h2>
+                          <h2 id="welcomeText">Teambuilding Media</h2>
                       </div>
                       <div class="col-sm-2"></div>
                   </div>
                   <div class="row">
                       <div class="col-sm-1"></div>
-                      <div class="col-sm-10">
+                      <div class="col-sm-11">
                           <div id="yearButtons">
-                              <a href="resultat.html"><input class="waveButton" id="buttonFirst" name="buttonFirst" type="button" value="Resultat"/></a>
-                              <a href="#"><input class="waveButton" id="buttonSecond" name="buttonSecond" type="button" value="Nämnder"/></a>
-                              <a href="#"><input class="waveButton" id="buttonThird" name="buttonThird" type="button" value="Jämförelse"/></a>
+                              <a href="resultat.html"><input class="waveButton" id="selectButtonTwo" name="buttonFirst" type="button" value="Resultat"/></a>
+                              <a href="#"><input class="waveButton" id="selectButtonTwo" name="buttonSecond" type="button" value="Nämnder"/></a>
                           </div>
                       </div>
                 </div>
                   
-                  
-                  <div class="row">
-                      <div class="col-sm-1"></div>
-                      <div class="col-sm-10">
-                      </div>
-                      <div class="col-sm-1"></div>
-                  </div>
               </div>
-              <div class="col-sm-1"></div>
           </div>
       </div>
       
@@ -255,10 +286,10 @@
                                     console.log(fileName);
 
                                     var lista = document.getElementById("topList");
-                                    lista.innerHTML = "<p>Budgeterat</p>";
+                                    lista.innerHTML = "<p><strong>Budgeterat</strong></p>";
                                     
                                     var anvant = document.getElementById("UsedList");
-                                    anvant.innerHTML = "<p>Använt</p>";
+                                    anvant.innerHTML = "<p style='color: red'><strong>Använt</strong></p>";
                                     
                                     
                                     d3.csv(fileName, function(data) {
@@ -266,11 +297,9 @@
                                         console.log(dataFilter)
                                             
                                         for (key in dataFilter) {
-                                            var yearr = parseInt(dataFilter[key].Year) + 1;
                                             
-                                            lista.innerHTML += "<p>" + dataFilter[key].Year + "/" + yearr + ": " + dataFilter[key].Budget + " kr</p>" ;
-                                            
-                                            anvant.innerHTML += "<p>" + dataFilter[key].Used + " kr</p>";
+                                            lista.innerHTML += "<p>" + dataFilter[key].Budget + " kr</p>" ;
+                                            anvant.innerHTML += "<p>" + dataFilter[key].Used + " kr</p>" ;
                                         }
                                         
                                         // Give these new data to update line
@@ -322,7 +351,7 @@
 
                                     var lab = document.getElementById("namnd");
                                     lab.innerHTML = "";
-                                    lab.innerHTML += "<p><strong>" + selectedOption + "</strong></p>" ; 
+                                    lab.innerHTML += "<p style='font-size:20px'><strong>" + selectedOption + "</strong></p>" ; 
 
                                     update(selectedOption)
                                 })
@@ -350,8 +379,18 @@
                               <div id="namnd"></div>
                               <hr>
                               <div class="row">
-                                  <div class="col-sm-7" id="topList"></div>
-                                  <div class="col-sm-5" id="UsedList"></div>
+                                  <div class="col-sm-2">
+                                      <p style="color: white">År</p>
+                                      <p>12/13</p>
+                                      <p>13/14</p>
+                                      <p>14/15</p>
+                                      <p>15/16</p>
+                                      <p>16/17</p>
+                                      <p>17/18</p>
+                                      <p>18/19</p>
+                                  </div>
+                                  <div class="col-sm-5" id="topList"></div>
+                                  <div class="col-sm-4" id="UsedList"></div>
                               </div>
                               <hr>
                               <div id="countryDetail"></div>
