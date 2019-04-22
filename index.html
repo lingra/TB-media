@@ -84,10 +84,9 @@
                       <div class="col-sm-1"></div>
                       <div class="col-sm-10">
                           <div id="yearButtons">
-                              <input class="waveButton" id="buttonFirst" name="buttonFirst" type="button" value="Resultat"/>
-                              <input class="waveButton" id="buttonSecond" name="buttonSecond" type="button" value="Nämnder"/>
-                              <input class="waveButton" id="buttonThird" name="buttonThird" type="button" value="Jämförelse"/>
-                              <p><label id="year"></label></p>
+                              <a href="resultat.html"><input class="waveButton" id="buttonFirst" name="buttonFirst" type="button" value="Resultat"/></a>
+                              <a href="#"><input class="waveButton" id="buttonSecond" name="buttonSecond" type="button" value="Nämnder"/></a>
+                              <a href="#"><input class="waveButton" id="buttonThird" name="buttonThird" type="button" value="Jämförelse"/></a>
                           </div>
                       </div>
                 </div>
@@ -226,9 +225,11 @@
                                     Tooltip.transition()		
                                         .duration(200)		
                                         .style("opacity", .9);		
-                                    Tooltip	.html(d.value)	
-                                        .style("left", (d3.event.pageX) + "px")		
-                                        .style("top", (d3.event.pageY) + "px");	
+                                    Tooltip	.html("<strong>" + d.Year + "</strong><br>" + d.Budget + " kr <br>" + d.Used + " kr")	
+                                        //.style("left", (d3.event.pageX) + "px")		
+                                        //.style("top", (d3.event.pageY) + "px");	
+                                        .style("left", (d3.event.pageX-100) + "px")		
+                                        .style("top", (d3.event.pageY-120) + "px");	
                                     })					
                                 .on("mouseout", function(d) {		
                                     Tooltip.transition()		
@@ -245,34 +246,21 @@
                                     .attr("cx", function(d) { return x(+d.Year) })
                                     .attr("cy", function(d) { return y(+d.Used) })
                                     .attr("r", 5)
-                                    .style("fill", "#69b3a2")
-                                .on("mouseover", function(d) {		
-                                    Tooltip.transition()		
-                                        .duration(200)		
-                                        .style("opacity", .9);		
-                                    Tooltip	.html(d.value)	
-                                        .style("left", (d3.event.pageX) + "px")		
-                                        .style("top", (d3.event.pageY) + "px");	
-                                    })					
-                                .on("mouseout", function(d) {		
-                                    Tooltip.transition()		
-                                        .duration(500)		
-                                        .style("opacity", 0);	
-                                });
+                                    .style("fill", "#69b3a2");
 
 
                                 // A function that update the chart
                                 function update(selectedGroup) {
-                                    console.log("Hej");
 
                                     // Create new data with the selection?
-
                                     var fileName = "./Data/" + selectedGroup + ".csv";
                                     console.log(fileName);
 
                                     var lista = document.getElementById("topList");
-                                    lista.innerHTML = "";
+                                    lista.innerHTML = "<p>Budgeterat</p>";
                                     
+                                    var anvant = document.getElementById("UsedList");
+                                    anvant.innerHTML = "<p>Använt</p>";
                                     
                                     
                                     d3.csv(fileName, function(data) {
@@ -281,7 +269,10 @@
                                             
                                         for (key in dataFilter) {
                                             var yearr = parseInt(dataFilter[key].Year) + 1;
-                                            lista.innerHTML += "<p>" + dataFilter[key].Year + "/" + yearr + ": " + dataFilter[key].Budget + "kr</p>" ;
+                                            
+                                            lista.innerHTML += "<p>" + dataFilter[key].Year + "/" + yearr + ": " + dataFilter[key].Budget + " kr</p>" ;
+                                            
+                                            anvant.innerHTML += "<p>" + dataFilter[key].Used + " kr</p>";
                                         }
                                         
                                         // Give these new data to update line
@@ -344,18 +335,6 @@
                         
                         fileData(fileName);
                       
-                        
-                        ;
-                      
-                      
-                      
-                      
-                      document.getElementById("buttonFirst").addEventListener('click', function(e) { 
-                          console.log("Hej");
-                      } , false);
-
-                      
-                      
                       
                         </script>
               </div>
@@ -372,9 +351,9 @@
                               <hr>
                               <div id="namnd"></div>
                               <hr>
-                              <div id="topList"></div>
-                              <hr>
                               <div class="row">
+                                  <div class="col-sm-7" id="topList"></div>
+                                  <div class="col-sm-5" id="UsedList"></div>
                               </div>
                               <hr>
                               <div id="countryDetail"></div>

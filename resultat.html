@@ -120,7 +120,7 @@
                   
                   <!-- Add a svg area, empty -->
                   <!-- Initialize a select button -->
-                  <div id="my_dataviz">
+                  <div id="my_dataviz" >
                   </div>
                   
                   <script>
@@ -141,6 +141,7 @@
                           .append("svg")
                             .attr("width", width + margin.left + margin.right)
                             .attr("height", height + margin.top + margin.bottom)
+                            //.attr("transform", "translate(" + 30 + ")")
                           .append("g")
                             .attr("transform",
                                   "translate(" + margin.left + "," + margin.top + ")");
@@ -218,9 +219,9 @@
                                     Tooltip.transition()		
                                         .duration(200)		
                                         .style("opacity", .9);		
-                                    Tooltip	.html(d.Budget)	
-                                        .style("left", (d3.event.pageX) + "px")		
-                                        .style("top", (d3.event.pageY) + "px");	
+                                    Tooltip	.html("<strong>" + d.Year + "</strong><br>" + d.Budget + " kr <br>" + d.Used + " kr")	
+                                        .style("left", (d3.event.pageX-100) + "px")		
+                                        .style("top", (d3.event.pageY-120) + "px");	
                                     })					
                                 .on("mouseout", function(d) {		
                                     Tooltip.transition()		
@@ -251,6 +252,23 @@
                                         .duration(500)		
                                         .style("opacity", 0);	
                                 });
+                            
+                                    var lista = document.getElementById("topList");
+                                    lista.innerHTML = "<p>Budgeterat</p>";
+                                    
+                                    var anvant = document.getElementById("UsedList");
+                                    anvant.innerHTML = "<p>Använt</p>";
+                                    
+                                    var dataFilter = data.map(function(d){return {Year: d.Year, Budget:d.Budget, Used:d.Used} })
+                                    console.log(dataFilter)
+                                            
+                                    for (key in dataFilter) {
+                                        var yearr = parseInt(dataFilter[key].Year) + 1;
+                                        
+                                        lista.innerHTML += "<p>" + dataFilter[key].Year + "/" + yearr + ": " + dataFilter[key].Budget + " kr</p>" ;
+                                        
+                                        anvant.innerHTML += "<p>" + dataFilter[key].Used + " kr</p>";
+                                        }
 
                             });                                 
                       
@@ -278,9 +296,9 @@
                               <hr>
                               <div id="namnd"></div>
                               <hr>
-                              <div id="topList"></div>
-                              <hr>
                               <div class="row">
+                                  <div class="col-sm-7" id="topList"></div>
+                                  <div class="col-sm-5" id="UsedList"></div>
                               </div>
                               <hr>
                               <div id="countryDetail"></div>
